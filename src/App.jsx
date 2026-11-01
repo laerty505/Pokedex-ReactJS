@@ -45,6 +45,19 @@ function App() {
       )}
 
       <PokemonList pokemons={pokemons} />
+
+      {hasMore && pokemonList.length > 0 && (
+        <div className="flex justify-center pb-8">
+          <button
+            type="button"
+            onClick={loadMore}
+            disabled={loading}
+            className="rounded-lg bg-cyan-500 px-6 py-3 font-semibold text-slate-900 hover:bg-cyan-400 disabled:opacity-50"
+          >
+            {loading ? "Carregando..." : "Carregar mais Pokémon"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
