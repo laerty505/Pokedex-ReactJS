@@ -4,8 +4,10 @@ import usePokemonList from "./hooks/usePokemonList";
 import PokemonList from "./components/PokemonList";
 import useTypes from "./hooks/useTypes";
 import usePokemonByType from "./hooks/usePokemonByType";
+import PokemonModal from "./components/PokemonModal";
 
 function App() {
+  const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState("");
   const [type, setType] = useState("");
 
@@ -44,7 +46,7 @@ function App() {
         </p>
       )}
 
-      <PokemonList pokemons={pokemons} />
+      <PokemonList pokemons={pokemons} onSelect={setSelected} />
 
       {hasMore && pokemonList.length > 0 && (
         <div className="flex justify-center pb-8">
@@ -58,6 +60,8 @@ function App() {
           </button>
         </div>
       )}
+
+      <PokemonModal pokemon={selected} onClose={() => setSelected(null)} />
     </div>
   );
 }
