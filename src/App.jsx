@@ -5,6 +5,7 @@ import PokemonList from "./components/PokemonList";
 import useTypes from "./hooks/useTypes";
 import usePokemonByType from "./hooks/usePokemonByType";
 import PokemonModal from "./components/PokemonModal";
+import TypeFilter from "./components/TypeFilter";
 
 function App() {
   const [selected, setSelected] = useState(null);
@@ -39,6 +40,15 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-900">
       <Header search={search} onSearchChange={setSearch} />
+
+      <TypeFilter
+        types={types}
+        typesError={typesError}
+        type={type}
+        onTypeChange={setType}
+        total={typePokemon.total}
+        shown={pokemonList.length}
+      />
 
       {message && (
         <p className={`p-6 ${error ? "text-red-400" : "text-slate-300"}`}>
