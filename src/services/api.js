@@ -34,6 +34,6 @@ export async function getPokemonByType(type) {
 // Escolhe a melhor imagem disponível: sprite pequena, ou arte oficial se não houver.
 // Retorna null se o Pokémon não tiver nenhuma das duas.
 export const getPokemonImage = (pokemon) =>
-  pokemon.sprites.front_default ??
   pokemon.sprites.other?.["official-artwork"]?.front_default ??
+  pokemon.sprites.front_default ??
   null;
