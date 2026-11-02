@@ -15,13 +15,13 @@ Abra o endereço que aparecer no terminal (normalmente http://localhost:5173).
 
 Outros comandos:
 
-- `npm run dev`: igual ao `start`, mas expõe a aplicação na rede local (útil para testar no celular).
-- `npm run build`: gera a versão de produção na pasta `dist`.
+- `npm run dev`: equivalente ao `npm start`, ele faz o servidor aceitar conexões de outros dispositivos da sua rede (útil para testar no celular).
+
 
 ## Tecnologias e dependências
 
-- **React 18**: somente componentes de função, com os hooks `useState` e `useEffect` (sem classes).
-- **Vite 5** (`@vitejs/plugin-react`): servidor de desenvolvimento e build.
+- **React 19**: somente componentes de função, com os hooks `useState` e `useEffect` (sem classes).
+- **Vite 8** (`@vitejs/plugin-react`): servidor de desenvolvimento e build.
 - **Tailwind CSS 4** (`tailwindcss` e `@tailwindcss/vite`): estilização por classes utilitárias e responsividade (grid e breakpoints `sm`, `md`, `lg`).
 - **fetch** nativo para as requisições (sem axios).
 
