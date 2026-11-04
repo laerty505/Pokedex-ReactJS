@@ -6,38 +6,33 @@ const PAGE_SIZE = 20;
 
 export default function usePokemonByType(type) {
   const [refs, setRefs] = useState([]);
+  const [refsType, setRefsType] = useState("");
+
   const [pokemonList, setPokemonList] = useState([]);
-  const [loading, setLoading] = useState(false);
+
+  const [loadingRefs, setLoadingRefs] = useState(false);
+  const [loadingDetails, setLoadingDetails] = useState(false);
+
   const [offset, setOffset] = useState(0);
   const [error, setError] = useState(null);
 
-  function incrementOffset() {
-    setOffset(offset + 20);
-  }
-
-  function decrementOffset() {
-    setOffset(offset - 20);
-  }
-
-  // Reseta a paginação quando o tipo muda
-  useEffect(() => {
-    setOffset(0);
-  }, [type]);
-
-  // Carrega os Pokémon sempre que o tipo ou offset mudar
+  // 1. Busca todos os Pokémon do tipo selecionado
   useEffect(() => {
     let cancelled = false;
 
-    async function load() {
-      if (!type) {
-        setRefs([]);
-        setPokemonList([]);
-        setLoading(false);
-        return;
-      }
+    setOffset(0);
+    setRefs([]);
+    setRefsType("");
+    setPokemonList([]);
+    setError(null);
 
-      setLoading(true);
-      setError(null);
+    if (!type) {
+      setLoadingRefs(false);
+      return;
+    }
+
+    async function loadReferences() {
+      setLoadingRefs(true);
 
       try {
         const all = await getPokemonByType(type);
@@ -45,14 +40,57 @@ export default function usePokemonByType(type) {
         if (cancelled) return;
 
         setRefs(all);
+        setRefsType(type);
 
-        const currentPage = all.slice(
-          offset,
-          offset + PAGE_SIZE
-        );
+      } catch {
+        if (!cancelled) {
+          setError("Não foi possível carregar os Pokémon desse tipo.");
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingRefs(false);
+        }
+      }
+    }
 
+    loadReferences();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [type]);
+
+  // 2. Busca os detalhes somente da página atual
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!type || refsType !== type) {
+      setPokemonList([]);
+      setLoadingDetails(false);
+      return;
+    }
+
+    const currentPage = refs.slice(
+      offset,
+      offset + PAGE_SIZE
+    );
+
+    if (currentPage.length === 0) {
+      setPokemonList([]);
+      setLoadingDetails(false);
+      return;
+    }
+
+    async function loadDetails() {
+      setLoadingDetails(true);
+      setError(null);
+      setPokemonList([]);
+
+      try {
         const details = await Promise.all(
-          currentPage.map((pokemon) => getPokemon(pokemon.url))
+          currentPage.map((pokemon) =>
+            getPokemon(pokemon.url)
+          )
         );
 
         if (cancelled) return;
@@ -61,35 +99,46 @@ export default function usePokemonByType(type) {
 
       } catch {
         if (!cancelled) {
-          setError("Não foi possível carregar os Pokémon desse tipo.");
+          setError("Não foi possível carregar os detalhes dos Pokémon.");
         }
       } finally {
         if (!cancelled) {
-          setLoading(false);
+          setLoadingDetails(false);
         }
       }
     }
 
-    load();
+    loadDetails();
 
     return () => {
       cancelled = true;
     };
+  }, [type, refsType, refs, offset]);
 
-  }, [type, offset]);
-
-  // Avança para a próxima página
-  function loadMore() {
-    setOffset(offset + PAGE_SIZE);
+  // 3. Controle da paginação
+  function incrementOffset() {
+    if (hasMore && !loading) {
+      setOffset((prev) => prev + PAGE_SIZE);
+    }
   }
 
+  function decrementOffset() {
+    if (offset > 0 && !loading) {
+      setOffset((prev) => Math.max(0, prev - PAGE_SIZE));
+    }
+  }
+
+  const loading = loadingRefs || loadingDetails;
+
+  const hasMore = offset + PAGE_SIZE < refs.length;
+
   return {
-    total: refs.length,
+    total: refsType === type ? refs.length : 0,
     pokemonList,
-    hasMore: offset + PAGE_SIZE < refs.length,
+    hasMore,
     loading,
     error,
-    loadMore,
+    loadMore: incrementOffset,
     incrementOffset,
     decrementOffset,
     offset
