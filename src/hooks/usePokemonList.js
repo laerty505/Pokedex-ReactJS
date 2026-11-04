@@ -7,17 +7,26 @@ export default function usePokemonList() {
   const [pokemonList, setPokemonList] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [offset , setOffset] = useState(0);
   const [error, setError] = useState(null);
 
-  async function loadMore() {
+  function incrementOffset() {
+    setOffset(offset + 20);
+  }
+
+  function decrementOffset() {
+    setOffset(offset - 20);
+  }
+
+  async function loadList() {
     setLoading(true);
     setError(null);
     try {
-      const page = await getPokemonPage(PAGE_SIZE, pokemonList.length);
+      const page = await getPokemonPage(PAGE_SIZE, offset);
       const details = await Promise.all(
         page.results.map((p) => getPokemon(p.url)),
       );
-      setPokemonList((prev) => [...prev, ...details.filter(Boolean)]);
+      setPokemonList(() => details.filter(Boolean));
       setHasMore(page.next !== null);
     } catch {
       setError("Não foi possível carregar os Pokémon.");
@@ -27,8 +36,8 @@ export default function usePokemonList() {
   }
 
   useEffect(() => {
-    loadMore();
-  }, []);
+    loadList();
+  }, [offset]);
 
-  return { pokemonList, hasMore, loading, error, loadMore };
+  return { pokemonList, hasMore, loading, error, offset, incrementOffset, decrementOffset, loadList };
 }

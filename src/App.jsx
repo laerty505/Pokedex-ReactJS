@@ -19,9 +19,15 @@ function App() {
 
   // Hooks não podem ficar dentro de if, então chamamos os dois sempre
   // e só escolhemos qual usar conforme o filtro de tipo.
-  const { pokemonList, hasMore, loading, error, loadMore } = type
-    ? typePokemon
-    : allPokemon;
+  const {
+    pokemonList,
+    hasMore,
+    loading,
+    error,
+    incrementOffset,
+    offset,
+    decrementOffset,
+  } = type ? typePokemon : allPokemon;
 
   // Busca client-side: ignora maiúsculas/minúsculas e aceita parte do nome.
   // Só enxerga os Pokémon já carregados.
@@ -58,18 +64,33 @@ function App() {
 
       <PokemonList pokemons={pokemons} onSelect={setSelected} />
 
-      {hasMore && pokemonList.length > 0 && (
-        <div className="flex justify-center pb-8">
-          <button
-            type="button"
-            onClick={loadMore}
-            disabled={loading}
-            className="rounded-lg bg-cyan-500 px-6 py-3 font-semibold text-slate-900 hover:bg-cyan-400 disabled:opacity-50"
-          >
-            {loading ? "Carregando..." : "Carregar mais Pokémon"}
-          </button>
-        </div>
-      )}
+      <div className="flex justify-center gap-4">
+        {offset > 1 && (                   // BOTAO DE DIMINUIR O OFFSET, NAO APARECE NA PRIMEIRA PAGINA 
+          <div className="flex  pb-8">
+            <button
+              type="button"
+              onClick={decrementOffset}
+              disabled={loading}
+              className="rounded-lg bg-cyan-500 px-6 py-3 font-semibold text-slate-900 hover:bg-cyan-400 disabled:opacity-50"
+            >
+              {loading ? "Carregando..." : "Página Anterior"}
+            </button>
+          </div>
+        )}
+
+        {hasMore && pokemonList.length > 0 && ( //  / BOTAO DE AUMENTAR O OFFSET, NAO APARECE SE NAO TIVER MAIS PAGINAS
+          <div className="flex  pb-8">          
+            <button
+              type="button"
+              onClick={incrementOffset}
+              disabled={loading}
+              className="rounded-lg bg-cyan-500 px-6 py-3 font-semibold text-slate-900 hover:bg-cyan-400 disabled:opacity-50"
+            >
+              {loading ? "Carregando..." : "Próxima Página"}
+            </button>
+          </div>
+        )}
+      </div>
 
       <PokemonModal pokemon={selected} onClose={() => setSelected(null)} />
     </div>
