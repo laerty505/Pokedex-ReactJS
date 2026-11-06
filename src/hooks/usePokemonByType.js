@@ -93,7 +93,7 @@ export default function usePokemonByType(type) {
           )
         );
 
-        if (cancelled) return;
+        if (cancelled) return;  // se o usuario troca o tipo, o efeito antigo ativa o cancelled, e evita atualizar o estado com dados desatualizados.
 
         setPokemonList(details.filter(Boolean)); // atualiza o estado com os detalhes recebidos.
 

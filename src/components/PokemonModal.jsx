@@ -1,12 +1,12 @@
 import { getPokemonImage } from "../services/api";
 
-function PokemonModal({ pokemon, onClose }) {
-  if (!pokemon) return null;
+function PokemonModal({ pokemon, onClose }) {   // pokemon = objeto com os detalhes do Pokémon, onClose = função que é chamada quando o modal é fechado (para fechar o modal)
+  if (!pokemon) return null;    //se nao houver pokemon selecionado, nao renderiza o modal, pois é null
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4">
-      <div className="bg-slate-900 text-white p-6 rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-        <button onClick={onClose} className="float-right text-xl cursor-pointer">
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4">  {/* modal ocupa toda a tela, com fundo preto semi-transparente, e centraliza o conteúdo do modal */}
+      <div className="bg-slate-900 text-white p-6 rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto"> {/* modal com fundo escuro,, largura máxima de 90% da tela e altura máxima de 90% da tela, com scroll vertical se o conteúdo ultrapassar a altura máxima */}
+        <button onClick={onClose} className="float-right text-xl cursor-pointer">   {/* botão de fechar o modal, chama a função onClose quando clicado */}
           X
         </button>
 
@@ -31,9 +31,9 @@ function PokemonModal({ pokemon, onClose }) {
         <p>{pokemon.abilities.map((a) => a.ability.name).join(", ")}</p>
 
         <h3 className="font-bold mt-4">Estatísticas</h3>
-        {pokemon.stats.map((s) => (
+        {pokemon.stats.map((s) => (   // percorre o array de estatísticas do Pokémon e exibe o nome da estatística e o valor base da estatística
           <p key={s.stat.name}>
-            {s.stat.name}: {s.base_stat}
+            {s.stat.name}: {s.base_stat}   {/* um paragrafo pra cada estatistica */}
           </p>
         ))}
       </div>

@@ -32,9 +32,9 @@ function App() {
   // Busca client-side: ignora maiúsculas/minúsculas e aceita parte do nome.
   // Só enxerga os Pokémon já carregados.
   const term = search.trim().toLowerCase();   // remove espaços e converte para minúsculas
-  const pokemons = term
-    ? pokemonList.filter((p) => p.name.includes(term))    // se tiver termo de busca, filtra a lista de pokemons carregados, retornando apenas os que contém o termo no nome.
-    : pokemonList;                                      // se não tiver termo de busca, retorna a lista completa de pokemons carregados.
+  const pokemons = term ? pokemonList.filter((p) => p.name.includes(term)) : pokemonList;
+         // se tiver termo de busca, filtra a lista de pokemons carregados, retornando apenas os que contém o termo no nome.
+                                          // se não tiver termo de busca, retorna a lista completa de pokemons carregados.
 
   // Mensagem de status (erro, carregando ou nenhum resultado)
   let message = null;
